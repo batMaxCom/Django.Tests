@@ -1,0 +1,21 @@
+@baseUrl = http://127.0.0.1:8000/api/v1/courses/
+
+GET {{baseUrl}}
+Content-Type: application/json
+###
+
+PATCH  {{baseUrl}}1/
+Content-Type: application/json
+
+{
+    "students": [1,2,3,4,5]
+}
+
+###
+
+PATCH  {{baseUrl}}1/
+Content-Type: application/json
+
+{
+    "name": [1,2,3,4,5]
+}
