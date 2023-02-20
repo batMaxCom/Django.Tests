@@ -37,11 +37,11 @@ def random_int():
 @pytest.mark.django_db
 def test_course_retrive(client, course_factory):
     course = course_factory(name='Python')
-    response = client.get('/api/v1/courses/')
+    response = client.get(f'/api/v1/courses/{course.id}/')
     data = response.json()
     assert response.status_code == 200
-    assert data[0]['id'] == 1
-    assert data[0]['name'] == 'Python'
+    assert data['id'] == course.id
+    assert data['name'] == 'Python'
 
 
 @pytest.mark.django_db
@@ -58,12 +58,12 @@ def test_course_list(client, course_factory, course_name):
 
 @pytest.mark.django_db
 def test_course_filter_id(client, course_factory):
-    course = course_factory(id=40)
-    response = client.get('/api/v1/courses/?id=40')
+    course = course_factory()
+    response = client.get(f'/api/v1/courses/?id={course.id}')
     data = response.json()
     assert response.status_code == 200
     assert len(data) == 1
-    assert data[0]['id'] == 40
+    assert data[0]['id'] == course.id
 
 
 
@@ -98,13 +98,9 @@ def test_course_update(client, course_factory):
 @pytest.mark.django_db
 def test_course_delete(client, course_factory):
     course = course_factory(name="PostgreSQL")
-    id = Course.objects.get(name='PostgreSQL').id
-    request_get = client.get(f'/api/v1/courses/')
-    data = request_get.json()
-    assert data[0]['name'] == 'PostgreSQL'
-    response = client.delete(f'/api/v1/courses/{id}/')
+    response = client.delete(f'/api/v1/courses/{course.id}/')
     assert response.status_code == 204
-    assert Course.objects.filter(id=id).first() == None
+    assert Course.objects.filter(id=course.id).first() == None
 
 
 @pytest.mark.parametrize(
